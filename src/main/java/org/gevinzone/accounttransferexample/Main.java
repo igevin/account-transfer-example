@@ -1,6 +1,7 @@
 package org.gevinzone.accounttransferexample;
 
 import org.gevinzone.accounttransferexample.threadsafe.*;
+import org.gevinzone.accounttransferexample.threadsafe.semaphore.*;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -10,6 +11,13 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         ExecutorService executor = createExecutor();
 
+//        lockTest(executor);
+        semaphoreTest(executor);
+
+        executor.shutdown();
+    }
+
+    private static void lockTest(ExecutorService executor) throws InterruptedException {
         Account a, b;
 
 //        a = new Account(1, 1000);
@@ -43,9 +51,14 @@ public class Main {
         a = new AllocatorAccount(1, 1000);
         b = new AllocatorAccount(2, 1000);
         concurrentAccountTransfer(a, b, executor);
+    }
 
+    private static void semaphoreTest(ExecutorService executor) throws InterruptedException {
+        Account a, b;
 
-        executor.shutdown();
+        a = new SemaphoreAccount(1, 1000);
+        b = new SemaphoreAccount(2, 1000);
+        concurrentAccountTransfer(a, b, executor);
     }
 
     private static ExecutorService createExecutor() {
