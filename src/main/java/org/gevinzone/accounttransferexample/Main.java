@@ -16,6 +16,10 @@ public class Main {
 //        b = new Account(2, 1000);
 //        concurrentAccountTransfer(a, b, executor);
 
+        a = new BadAccount(1, 1000);
+        b = new BadAccount(2, 1000);
+        concurrentAccountTransfer(a, b, executor);
+
 //        a = new DeadLockAccount(1, 1000);
 //        b = new DeadLockAccount(2, 1000);
 //        concurrentAccountTransfer(a, b, executor);
@@ -24,9 +28,9 @@ public class Main {
 //        b = new OrderedLockAccount(2, 1000);
 //        concurrentAccountTransfer(a, b, executor);
 
-        a = new ClassLockAccount(1, 1000);
-        b = new ClassLockAccount(2, 1000);
-        concurrentAccountTransfer(a, b, executor);
+//        a = new ClassLockAccount(1, 1000);
+//        b = new ClassLockAccount(2, 1000);
+//        concurrentAccountTransfer(a, b, executor);
 
 
         executor.shutdown();
