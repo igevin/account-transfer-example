@@ -32,8 +32,12 @@ public class Main {
 //        b = new ClassLockAccount(2, 1000);
 //        concurrentAccountTransfer(a, b, executor);
 
-        a = new TryLockAccount(1, 1000);
-        b = new TryLockAccount(2, 1000);
+//        a = new TryLockAccount(1, 1000);
+//        b = new TryLockAccount(2, 1000);
+//        concurrentAccountTransfer(a, b, executor);
+
+        a = new LockInterruptableAccount(1, 1000);
+        b = new LockInterruptableAccount(2, 1000);
         concurrentAccountTransfer(a, b, executor);
 
 
