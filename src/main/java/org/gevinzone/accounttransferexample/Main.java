@@ -56,8 +56,12 @@ public class Main {
     private static void semaphoreTest(ExecutorService executor) throws InterruptedException {
         Account a, b;
 
-        a = new SemaphoreAccount(1, 1000);
-        b = new SemaphoreAccount(2, 1000);
+//        a = new SemaphoreAccount(1, 1000);
+//        b = new SemaphoreAccount(2, 1000);
+//        concurrentAccountTransfer(a, b, executor);
+
+        a = new TrySemaphoreAccount(1, 1000);
+        b = new TrySemaphoreAccount(2, 1000);
         concurrentAccountTransfer(a, b, executor);
     }
 
