@@ -1,6 +1,6 @@
-package org.gevinzone.threadsafe;
+package org.gevinzone.accounttransferexample.threadsafe;
 
-import org.gevinzone.Account;
+import org.gevinzone.accounttransferexample.Account;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;

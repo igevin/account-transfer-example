@@ -1,4 +1,4 @@
-package org.gevinzone;
+package org.gevinzone.accounttransferexample;
 
 public class Account implements TransferAccount {
     private final Long id;

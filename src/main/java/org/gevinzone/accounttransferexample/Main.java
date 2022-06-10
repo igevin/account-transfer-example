@@ -1,6 +1,6 @@
-package org.gevinzone;
+package org.gevinzone.accounttransferexample;
 
-import org.gevinzone.threadsafe.*;
+import org.gevinzone.accounttransferexample.threadsafe.*;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;

@@ -1,4 +1,4 @@
-package org.gevinzone;
+package org.gevinzone.accounttransferexample;
 
 @FunctionalInterface
 public interface TransferAccount {
