@@ -1,6 +1,7 @@
 package org.gevinzone.accounttransferexample.threadsafe;
 
 import org.gevinzone.accounttransferexample.Account;
+import org.gevinzone.accounttransferexample.AutoCloseableLock;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -17,7 +18,8 @@ public class OrderedLockAccount extends Account {
             throw new RuntimeException("target is not OrderedLockAccount instance");
         }
 //        transferWithLock(target, amount);
-        transferWithSynchronized(target, amount);
+//        transferWithSynchronized(target, amount);
+        transferWithAutoLock(target, amount);
     }
 
     private void transferWithSynchronized(Account target, int amount) {
@@ -43,6 +45,18 @@ public class OrderedLockAccount extends Account {
             }
         } finally {
             left.lock.unlock();
+        }
+    }
+    private void transferWithAutoLock(Account target, int amount) {
+        OrderedLockAccount left = this.getId() < target.getId() ? this : (OrderedLockAccount)target;
+        OrderedLockAccount right = this.getId() < target.getId() ? (OrderedLockAccount)target : this;
+
+        try(AutoCloseableLock leftAutoLock = new AutoCloseableLock(left.lock)) {
+            leftAutoLock.lock();
+            try (AutoCloseableLock rightAutoLock = new AutoCloseableLock(right.lock)) {
+                rightAutoLock.lock();
+                transferAccount(target, amount);
+            }
         }
     }
 }

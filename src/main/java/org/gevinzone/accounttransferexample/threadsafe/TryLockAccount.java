@@ -1,6 +1,7 @@
 package org.gevinzone.accounttransferexample.threadsafe;
 
 import org.gevinzone.accounttransferexample.Account;
+import org.gevinzone.accounttransferexample.AutoCloseableLock;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -18,7 +19,8 @@ public class TryLockAccount extends Account {
         if (!(target instanceof TryLockAccount)) {
             throw new RuntimeException("target is not instance of TryLockAccount");
         }
-        transferWithTryLock((TryLockAccount) target, amount);
+//        transferWithTryLock((TryLockAccount) target, amount);
+        transferWithAutoTryLock((TryLockAccount) target, amount);
 
     }
 
@@ -39,6 +41,22 @@ public class TryLockAccount extends Account {
                 }
             }
             // 防止活锁
+            randomSleepForLiveLock();
+        }
+    }
+
+    private void transferWithAutoTryLock(TryLockAccount target, int amount) {
+        while (true) {
+            try (AutoCloseableLock autoLock = new AutoCloseableLock(lock)) {
+                if (autoLock.tryLock()) {
+                    try (AutoCloseableLock targetAutoLock = new AutoCloseableLock(target.lock)) {
+                        if (targetAutoLock.tryLock()) {
+                            transferAccount(target, amount);
+                            break;
+                        }
+                    }
+                }
+            }
             randomSleepForLiveLock();
         }
     }
