@@ -1,5 +1,7 @@
 package org.gevinzone;
 
+import org.gevinzone.threadsafe.*;
+
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -10,8 +12,12 @@ public class Main {
 
         Account a, b;
 
-        a = new Account(1, 1000);
-        b = new Account(2, 1000);
+//        a = new Account(1, 1000);
+//        b = new Account(2, 1000);
+//        concurrentAccountTransfer(a, b, executor);
+
+        a = new OrderedLockAccount(1, 1000);
+        b = new OrderedLockAccount(2, 1000);
         concurrentAccountTransfer(a, b, executor);
 
 

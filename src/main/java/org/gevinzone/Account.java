@@ -1,7 +1,7 @@
 package org.gevinzone;
 
 public class Account implements TransferAccount {
-    private final long id;
+    private final Long id;
 
 
     private int balance;
@@ -11,11 +11,15 @@ public class Account implements TransferAccount {
         this.balance = balance;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public int getBalance() {
         return balance;
     }
 
-    protected void transferAccount(Account target, int amount){
+    protected void transferAccount(Account target, int amount) {
         if (this.balance > amount) {
             this.balance -= amount;
 
