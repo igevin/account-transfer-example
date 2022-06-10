@@ -16,9 +16,13 @@ public class Main {
 //        b = new Account(2, 1000);
 //        concurrentAccountTransfer(a, b, executor);
 
-        a = new OrderedLockAccount(1, 1000);
-        b = new OrderedLockAccount(2, 1000);
+        a = new DeadLockAccount(1, 1000);
+        b = new DeadLockAccount(2, 1000);
         concurrentAccountTransfer(a, b, executor);
+
+//        a = new OrderedLockAccount(1, 1000);
+//        b = new OrderedLockAccount(2, 1000);
+//        concurrentAccountTransfer(a, b, executor);
 
 
         executor.shutdown();
