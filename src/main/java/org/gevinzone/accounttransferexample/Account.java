@@ -23,7 +23,7 @@ public class Account implements TransferAccount {
         if (this.balance > amount) {
             this.balance -= amount;
 
-            sleep();
+//            sleep();
 
             target.balance += amount;
         }
@@ -36,7 +36,7 @@ public class Account implements TransferAccount {
 
     private void sleep() {
         try {
-            Thread.sleep(50);
+            Thread.sleep(20);
         } catch (InterruptedException exception) {
             exception.printStackTrace();
         }

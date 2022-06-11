@@ -11,8 +11,8 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         ExecutorService executor = createExecutor();
 
-//        lockTest(executor);
-        semaphoreTest(executor);
+        lockTest(executor);
+//        semaphoreTest(executor);
 
         executor.shutdown();
     }
@@ -24,9 +24,9 @@ public class Main {
 //        b = new Account(2, 1000);
 //        concurrentAccountTransfer(a, b, executor);
 
-//        a = new BadAccount(1, 1000);
-//        b = new BadAccount(2, 1000);
-//        concurrentAccountTransfer(a, b, executor);
+        a = new BadAccount(1, 1000);
+        b = new BadAccount(2, 1000);
+        concurrentAccountTransfer(a, b, executor);
 
 //        a = new DeadLockAccount(1, 1000);
 //        b = new DeadLockAccount(2, 1000);
@@ -48,9 +48,9 @@ public class Main {
 //        b = new LockInterruptableAccount(2, 1000);
 //        concurrentAccountTransfer(a, b, executor);
 
-        a = new AllocatorAccount(1, 1000);
-        b = new AllocatorAccount(2, 1000);
-        concurrentAccountTransfer(a, b, executor);
+//        a = new AllocatorAccount(1, 1000);
+//        b = new AllocatorAccount(2, 1000);
+//        concurrentAccountTransfer(a, b, executor);
     }
 
     private static void semaphoreTest(ExecutorService executor) throws InterruptedException {
@@ -71,7 +71,7 @@ public class Main {
     }
 
     private static void concurrentAccountTransfer(Account a, Account b, ExecutorService executor) throws InterruptedException {
-        int loop = 50;
+        int loop = 5000;
         CountDownLatch latchA = new CountDownLatch(loop);
         CountDownLatch latchB = new CountDownLatch(loop);
         showAccounts(a, b, "Before transfer: ");
