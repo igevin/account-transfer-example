@@ -6,13 +6,15 @@ import org.gevinzone.accounttransferexample.threadsafe.semaphore.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.BiConsumer;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
         ExecutorService executor = createExecutor();
 
-        lockTest(executor);
+//        lockTest(executor);
 //        semaphoreTest(executor);
+        lockInterruptableTest();
 
         executor.shutdown();
     }
@@ -24,9 +26,9 @@ public class Main {
 //        b = new Account(2, 1000);
 //        concurrentAccountTransfer(a, b, executor);
 
-        a = new BadAccount(1, 1000);
-        b = new BadAccount(2, 1000);
-        concurrentAccountTransfer(a, b, executor);
+//        a = new BadAccount(1, 1000);
+//        b = new BadAccount(2, 1000);
+//        concurrentAccountTransfer(a, b, executor);
 
 //        a = new DeadLockAccount(1, 1000);
 //        b = new DeadLockAccount(2, 1000);
@@ -44,13 +46,10 @@ public class Main {
 //        b = new TryLockAccount(2, 1000);
 //        concurrentAccountTransfer(a, b, executor);
 
-//        a = new LockInterruptableAccount(1, 1000);
-//        b = new LockInterruptableAccount(2, 1000);
-//        concurrentAccountTransfer(a, b, executor);
 
-//        a = new AllocatorAccount(1, 1000);
-//        b = new AllocatorAccount(2, 1000);
-//        concurrentAccountTransfer(a, b, executor);
+        a = new AllocatorAccount(1, 1000);
+        b = new AllocatorAccount(2, 1000);
+        concurrentAccountTransfer(a, b, executor);
     }
 
     private static void semaphoreTest(ExecutorService executor) throws InterruptedException {
@@ -99,6 +98,26 @@ public class Main {
 
     private static void showAccounts(Account a, Account b, String msg) {
         System.out.println(msg);
+        System.out.printf("A: %d, B: %d\n", a.getBalance(), b.getBalance());
+    }
+
+    private static void lockInterruptableTest() throws InterruptedException {
+        LockInterruptableAccount a = new LockInterruptableAccount(1, 1000);
+        LockInterruptableAccount b = new LockInterruptableAccount(2, 1000);
+        System.out.println("before...");
+        System.out.printf("A: %d, B: %d\n", a.getBalance(), b.getBalance());
+
+        BiConsumer<LockInterruptableAccount, LockInterruptableAccount> consumer =
+                (o1, o2) -> o1.transfer(o2, 1);
+
+        Thread thread1 = new Thread(() -> consumer.accept(a, b));
+        Thread thread2 = new Thread(() -> consumer.accept(b, a));
+        thread1.start();
+        thread2.start();
+        thread1.interrupt();
+        thread1.join();
+        thread2.join();
+        System.out.println("after...");
         System.out.printf("A: %d, B: %d\n", a.getBalance(), b.getBalance());
     }
 

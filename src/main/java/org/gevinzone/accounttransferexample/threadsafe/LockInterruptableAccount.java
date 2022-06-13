@@ -24,54 +24,37 @@ public class LockInterruptableAccount extends Account {
 
     }
 
-    private void transferWithLockInterruptable(LockInterruptableAccount target, int amount)  {
-        while (true) {
+    private void transferWithLockInterruptable(LockInterruptableAccount target, int amount) {
+        try {
+            lock.lockInterruptibly();
+            randomSleep();
             try {
-                lock.lockInterruptibly();
-                if (!target.lock.tryLock()) {
-                    Thread.currentThread().interrupt();
-                    return;
-                }
-                try {
-                    transferAccount(target, amount);
-                    break;
-                } finally {
-                    target.lock.unlock();
-                }
-            } catch (InterruptedException ignored) {
-
+                target.lock.lockInterruptibly();
+                transferAccount(target, amount);
             } finally {
-                lock.unlock();
+                target.lock.unlock();
             }
-
-            // 防止活锁
-            randomSleepForLiveLock();
+        } catch (InterruptedException ignored) {
+        } finally {
+            lock.unlock();
         }
     }
 
     private void transferWithAutoLockInterruptable(LockInterruptableAccount target, int amount) {
-        while (true) {
-            try (AutoCloseableLock autoLock = new AutoCloseableLock(lock)) {
-                autoLock.lockInterruptibly();
-                if (!target.lock.tryLock()) {
-                    Thread.currentThread().interrupt();
-                    return;
-                }
-                try {
-                    transferAccount(target, amount);
-                    break;
-                } finally {
-                    target.lock.unlock();
-                }
-            } catch (InterruptedException ignored) {
+        try (AutoCloseableLock autoLock = new AutoCloseableLock(lock)) {
+            autoLock.lockInterruptibly();
+            try (AutoCloseableLock autoLock2 = new AutoCloseableLock(target.lock)) {
+                autoLock2.lockInterruptibly();
+                transferAccount(target, amount);
             }
-            randomSleepForLiveLock();
+        } catch (InterruptedException ignored) {
+
         }
     }
 
-    private void randomSleepForLiveLock() {
+    private void randomSleep() {
         try {
-            TimeUnit.NANOSECONDS.sleep((long) (Math.random() * 10));
+            TimeUnit.MILLISECONDS.sleep((long) (Math.random() * 10));
         } catch (InterruptedException exception) {
             exception.printStackTrace();
         }
